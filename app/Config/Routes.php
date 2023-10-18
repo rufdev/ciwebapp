@@ -12,10 +12,13 @@ $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
 
-$routes->get('authors/list', 'AuthorController::getall');
+$routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 
-$routes->resource('authors', ['controller' => 'AuthorController']);
-$routes->resource('posts', ['controller' => 'PostController']);
+
+$routes->post('authors/list', 'AuthorController::getall', ['filter' => 'groupfilter:admin']);
+
+$routes->resource('authors', ['controller' => 'AuthorController', 'filter' => 'groupfilter:admin', 'except' => ['new,edit']]);
+$routes->resource('posts', ['controller' => 'PostController', 'filter' => 'auth', 'except' => ['new,edit']]);
 
 
 

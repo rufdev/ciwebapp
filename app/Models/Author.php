@@ -26,7 +26,7 @@ class Author extends Model
     protected $validationRules      = [
         'first_name' => 'required|min_length[3]|max_length[100]',
         'last_name'  => 'required|min_length[3]|max_length[100]',
-        'email'      => 'required|valid_email|is_unique[authors.email]',
+        'email'      => 'required|valid_email',
         'birthdate'  => 'required|valid_date',
     ];
     protected $validationMessages   = [];

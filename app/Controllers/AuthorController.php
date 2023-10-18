@@ -14,7 +14,7 @@ class AuthorController extends ResourceController
      */
     public function index()
     {
-        //
+        return view('authors/index');
     }
 
     /**
@@ -30,19 +30,58 @@ class AuthorController extends ResourceController
     }
 
     public function getall() {
+        $request = service('request');
+        $postData = $request->getPost();
+    
+        $response = array();
+
+        ## Read value
+        $draw = $postData['draw'];
+        $start = $postData['start'];
+        $rowperpage = $postData['length']; // Rows display per page
+        $searchValue = $postData['search']['value']; // Search value
+
+        ## Total number of records without filtering
         $author = new \App\Models\Author();
-        $searchtext = $this->request->getGet('searchtext');    
-        
-        if($searchtext != null ){
-            $data = $author
-            ->like('last_name', $searchtext)
-            ->orlike('first_name',$searchtext)
-            ->findAll();
-            return $this->response->setJSON($data);
+        $totalRecords = $author->select('id')->countAllResults();
+
+        ## Total number of records with filtering
+        $totalRecordwithFilter = $author->select('id')
+            ->orLike('last_name', $searchValue)
+            ->orLike('first_name', $searchValue)
+            ->orLike('email', $searchValue)
+            ->countAllResults();
+
+        ## Fetch records
+        $records = $author->select('*')
+            ->orLike('last_name', $searchValue)
+            ->orLike('first_name', $searchValue)
+            ->orLike('email', $searchValue)
+            ->orderBy('last_name', 'asc')
+            ->findAll($rowperpage, $start);
+
+        $data = array();
+
+        foreach ($records as $record) {
+
+            $data[] = array(
+                "id" => $record['id'],
+                "last_name" => $record['last_name'],
+                "first_name" => $record['first_name'],
+                "email" => $record['email'],
+                "birthdate" => $record['birthdate']
+            );
         }
-        
-        $data = $author->findAll();
-        return $this->response->setJSON($data);
+
+        ## Response
+        $response = array(
+            "draw" => intval($draw),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalRecordwithFilter,
+            "data" => $data,
+            "token" => csrf_hash() // New token hash
+        );
+        return $this->response->setJSON($response);
     }
 
     /**
@@ -104,7 +143,8 @@ class AuthorController extends ResourceController
 
         $author = new \App\Models\Author();
         $data = $this->request->getJSON();
-
+        unset($data->id);
+       
         if(!$author->validate($data)){
             $response = array(
                 "status" => "error",

@@ -79,7 +79,9 @@ class Home extends BaseController
 
         // echo json_encode($result);
 
-
+        // if(auth()->user()){
+        //     return view('template/admin_template');
+        // }
 
         return view('welcome_message');
     }

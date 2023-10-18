@@ -13,7 +13,7 @@ class PostController extends ResourceController
      */
     public function index()
     {
-        //
+        return view('posts/index');
     }
 
     /**
