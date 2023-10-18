@@ -16,6 +16,7 @@ $routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 
 
 $routes->post('authors/list', 'AuthorController::getall', ['filter' => 'groupfilter:admin']);
+$routes->post('posts/list', 'PostController::getall', ['filter' => 'auth']);
 
 $routes->resource('authors', ['controller' => 'AuthorController', 'filter' => 'groupfilter:admin', 'except' => ['new,edit']]);
 $routes->resource('posts', ['controller' => 'PostController', 'filter' => 'auth', 'except' => ['new,edit']]);

@@ -269,7 +269,7 @@
         paging: true,
         lengthChange: true,
         searching: true,
-        ordering: false,
+        ordering: true,
         info: true,
         autoWidth: false,
         lengthMenu: [5, 10, 25, 50],

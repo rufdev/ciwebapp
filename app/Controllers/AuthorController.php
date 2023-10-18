@@ -40,7 +40,10 @@ class AuthorController extends ResourceController
         $start = $postData['start'];
         $rowperpage = $postData['length']; // Rows display per page
         $searchValue = $postData['search']['value']; // Search value
-
+        $sortby = $postData['order'][0]['column']; // Sort column index
+        $sortdir = $postData['order'][0]['dir']; // Sort direction
+        $sortcolumn = $postData['columns'][$sortby]['data']; // Sort column name
+        
         ## Total number of records without filtering
         $author = new \App\Models\Author();
         $totalRecords = $author->select('id')->countAllResults();
@@ -57,7 +60,7 @@ class AuthorController extends ResourceController
             ->orLike('last_name', $searchValue)
             ->orLike('first_name', $searchValue)
             ->orLike('email', $searchValue)
-            ->orderBy('last_name', 'asc')
+            ->orderBy($sortcolumn, $sortdir)
             ->findAll($rowperpage, $start);
 
         $data = array();

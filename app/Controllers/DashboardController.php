@@ -15,10 +15,13 @@ class DashboardController extends ResourceController
     public function index()
     {
         $author = new \App\Models\Author();
+        $post = new \App\Models\Post();
         $totalauthors = $author->select('id')->countAllResults();
+        $totalposts = $post->select('id')->countAllResults();
 
         $data = [
-            'totalauthors' => $totalauthors
+            'totalauthors' => $totalauthors,
+            'totalposts' => $totalposts
         ];
         return view('dashboard/index',$data);
     }

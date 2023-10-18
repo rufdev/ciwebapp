@@ -33,7 +33,7 @@ class Home extends BaseController
         // $builder->whereNotIn('id', [1, 2, 3]);
         // $builder->like('last_name', 'ming');
         // $builder->orlike('first_name', 'mon');
-        
+
         // $builder->orderBy('last_name', 'ASC');
         // $builder->limit(10);
         // $query = $builder->get();
@@ -83,6 +83,17 @@ class Home extends BaseController
         //     return view('template/admin_template');
         // }
 
-        return view('welcome_message');
+        $posts = new \App\Models\Post();
+
+        $result = $posts->select('posts.*, CONCAT(authors.first_name, " ", authors.last_name) as author_name')
+            ->join('authors', 'authors.id = posts.author_id', 'inner')
+            ->orderBy('posts.created_at', 'desc')
+            ->paginate(10);
+     
+        $data = [
+            'posts' => $result
+        ];
+
+        return view('welcome_message', $data);
     }
 }
